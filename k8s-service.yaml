@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8-with-node-service #The name of the Service.
+spec:
+  selector: #Specifies the labels that the Service will route traffic to.
+    app: k8-with-node  # This should match the labels of your Pod(s)
+  ports:
+    - protocol: TCP # Specifies the protocol used for the port. Here, it's TCP.
+      port: 80     # Port on the Service through which it will be accessible
+      targetPort: 5000  # Port on the Pod where the service traffic will be forwarded
+  type: NodePort # Specifies the type of Service. 

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: # Contains metadata about the Deployment, such as its name (k8-with-node-deployment).
+  name: k8-with-node-deployment
+spec:
+  replicas: 2 #: Specifies the desired number of replicas for the Pods managed by the Deployment. In this example, it's set to 2, indicating that the Deployment should maintain two replicas of the Pod.
+  selector: #Specifies how the Deployment identifies which Pods it manages. It uses labels to match Pods. In this example, the Deployment will manage Pods with the label app: k8-with-node.
+    matchLabels:
+      app: k8-with-node
+  template: #Specifies the Pod template used to create new Pods managed by the Deployment.
+    metadata: #Contains labels for the Pods created by the Deployment.
+      labels:
+        app: k8-with-node
+    spec: # Defines the specification for the Pods created by the Deployment.
+      containers:
+        - name: k8-with-node #Specifies the name of the container. In this example, it's k8-with-node.
+          image: naveta/k8-with-node:v1 #: Specifies the Docker image to use for the container. In this example, it's 
+          ports:
+            - containerPort: 5000
+      imagePullSecrets:
+        - name: k8-registry-secret
