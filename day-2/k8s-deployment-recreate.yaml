@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: # Contains metadata about the Deployment, such as its name (node-hello-world-k8-day2-recreate-deployment).
+  name: node-hello-world-k8-day2-recreate-deployment
+spec:
+  replicas: 3 #: Specifies the desired number of replicas for the Pods managed by the Deployment. In this example, it's set to 2, indicating that the Deployment should maintain two replicas of the Pod.
+  selector: #Specifies how the Deployment identifies which Pods it manages. It uses labels to match Pods. In this example, the Deployment will manage Pods with the label app: node-hello-world-k8-day2-recreate-deployment.
+    matchLabels:
+      app: node-hello-world-k8-day2-recreate-deployment
+  template: #Specifies the Pod template used to create new Pods managed by the Deployment.
+    metadata: #Contains labels for the Pods created by the Deployment.
+      labels:
+        app: node-hello-world-k8-day2-recreate-deployment
+    spec:  # Defines the specification for the Pods created by the Deployment.
+      containers:
+      - name: node-hello-world-k8-day2-container  #Specifies the name of the container. In this example, it's node-hello-world-k8-day2-container.
+        image: naveta/k8-with-node:v2 #: Specifies the Docker image to use for the container.
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+  strategy:
+    type: Recreate
