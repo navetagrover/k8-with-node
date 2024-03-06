@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress  # Name of the Deployment
+spec:
+  replicas: 2  # Number of replicas to run
+  selector:
+    matchLabels:
+      app: wordpress  # Label selector for identifying pods controlled by this Deployment
+  template:
+    metadata:
+      labels:
+        app: wordpress  # Label to apply to pods created by this template
+    spec:
+      containers:
+        - name: wordpress  # Name of the container
+          image: wordpress:latest  # Docker image to use for the container
+          ports:
+            - containerPort: 80  # Port on which the container listens for incoming traffic
+          env:
+            - name: MYSQL_DATABASE  # Name of the environment variable for the database name
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials  # Name of the Secret containing database credentials
+                  key: db_name  # Key within the Secret for the database name
+            - name: MYSQL_USER  # Name of the environment variable for the database user
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials  # Name of the Secret containing database credentials
+                  key: db_user  # Key within the Secret for the database user
+            - name: MYSQL_PASSWORD  # Name of the environment variable for the database password
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials  # Name of the Secret containing database credentials
+                  key: db_password  # Key within the Secret for the database password
+            - name: MYSQL_HOST  # Name of the environment variable for the database host
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials  # Name of the Secret containing database credentials
+                  key: db_host  # Key within the Secret for the database host
+          resources:
+            limits:
+              cpu: "0.5"  # Set the maximum CPU usage for the container
+              memory: "512Mi"  # Set the maximum memory usage for the container
+            requests:
+              cpu: "0.1"  # Set the minimum CPU requested by the container
+              memory: "256Mi"  # Set the minimum memory requested by the container
