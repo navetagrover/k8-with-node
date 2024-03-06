@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wordpress  # Name of the container
-          image: wordpress:latest  # Docker image to use for the container
+          image: naveta/wordpress:v1  # Docker image to use for the container
           ports:
             - containerPort: 80  # Port on which the container listens for incoming traffic
           env:
