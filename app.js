@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const port = 5000;
+const WEATHER_SERVICE_URL = 'http://weather-api-service:4000/weather'; // Using service name as the hostname
+
 
 // Define a route that returns "Hello, World!"
 app.get('/', (req, res) => {

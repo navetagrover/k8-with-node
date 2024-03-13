@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: k8-with-node #This specifies the name of the container. In this example, it's named k8-with-node
-      image: naveta/k8-with-node:v2
+      image: naveta/k8-with-node:v3
       ports:
         - containerPort: 5000
   imagePullSecrets:
