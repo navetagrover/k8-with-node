@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis  # Service name
+spec:
+  selector:
+    app: redis  # Select pods with label app: redis
+  ports:
+    - protocol: TCP
+      port: 6379  # Port on the service
+      targetPort: 6379  # Port on the pods
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis  # StatefulSet name
+spec:
+  serviceName: redis  # Service name associated with this StatefulSet
+  replicas: 3  # Number of replicas
+  selector:
+    matchLabels:
+      app: redis  # Label selector for pods managed by this StatefulSet
+  template:
+    metadata:
+      labels:
+        app: redis  # Labels applied to pods
+    spec:
+      containers:
+      - name: redis  # Container name
+        image: redis:6.2.6  # Redis image version
+        ports:
+        - containerPort: 6379  # Port on the container
+          name: redis  # Port name
+          protocol: TCP  # Protocol
+        resources:  # Resource limits and requests
+          requests:
+            memory: "100Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:  # Volume mounts
+        - name: redis-data  # Volume name
+          mountPath: /data  # Mount path in the container
+  volumeClaimTemplates:  # Persistent volume claim templates
+  - metadata:
+      name: redis-data  # Persistent volume claim name
+    spec:
+      accessModes: [ "ReadWriteOnce" ]  # Access mode
+      storageClassName: local-path  # Storage class name, kubectl get storageclasses (to get storage classes)
+      resources:
+        requests:
+          storage: 1Gi  # Requested storage size
