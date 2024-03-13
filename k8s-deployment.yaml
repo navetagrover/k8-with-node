@@ -14,7 +14,7 @@ spec:
     spec: # Defines the specification for the Pods created by the Deployment.
       containers:
         - name: k8-with-node #Specifies the name of the container. In this example, it's k8-with-node.
-          image: naveta/k8-with-node:v1 #: Specifies the Docker image to use for the container. In this example, it's 
+          image: naveta/k8-with-node:v2 #: Specifies the Docker image to use for the container. In this example, it's 
           ports:
             - containerPort: 5000
       imagePullSecrets:
