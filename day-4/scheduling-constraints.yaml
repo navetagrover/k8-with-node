@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: day4-scheduling-constraints  # Name of the Deployment resource
+spec:
+  replicas: 2  # Number of desired replicas (pods)
+  selector:
+    matchLabels:
+      app: day4-scheduling-constraints  # Label selector for the pods managed by this Deployment
+  template:
+    metadata:
+      labels:
+        app: day4-scheduling-constraints  # Labels applied to the pods
+    spec:
+      tolerations:  # Tolerations for scheduling pods on nodes with specific taints
+      - key: "day4-scheduling-constraints"  # Key of the taint being tolerated
+        operator: "Equal"  # Operator for toleration match
+        value: "true"  # Value of the taint being tolerated
+        effect: "NoSchedule"  # Effect of the toleration
+      affinity:  # Affinity rules for pod scheduling
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: day4-scheduling-constraints  # Key for node affinity match
+                operator: In  # Operator for node affinity match
+                values:
+                - "true"  # Value for node affinity match
+        podAntiAffinity:  # Pod anti-affinity rules to prevent multiple instances of the pod on the same node
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"  # Key for topology anti-affinity
+            labelSelector:
+              matchExpressions:
+              - key: app  # Key for label match
+                operator: In  # Operator for label match
+                values:
+                - day4-scheduling-constraints  # Value for label match
+      containers:  # Container specification
+      - name: node-hello-world-k8-day4-container  # Name of the container
+        image: naveta/k8-with-node:v2  # Docker image for the container
+        ports:
+        - containerPort: 5000  # Port exposed by the container
+        resources:  # Resource limits and requests for the container
+          limits:
+            cpu: "1"  # Maximum CPU limit for the container
+            memory: "512Mi"  # Maximum memory limit for the container
+          requests:
+            cpu: "0.5"  # CPU request for the container
+            memory: "256Mi"  # Memory request for the container
