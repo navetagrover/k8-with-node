@@ -89,7 +89,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-pdb:
+podDisruptionBudget:
+  enabled: true
   minAvailable: 1
 
 # Additional volumes on the output Deployment definition.

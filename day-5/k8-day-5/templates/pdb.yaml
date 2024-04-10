@@ -1,22 +1,32 @@
-# Specifies the API version for the PodDisruptionBudget resource
+# Define the PodDisruptionBudget resource
+---
+# Specify the API version and resource kind
 apiVersion: policy/v1
-
-# Specifies the kind of Kubernetes resource, which is a PodDisruptionBudget in this case
 kind: PodDisruptionBudget
 
-# Specifies metadata for the PodDisruptionBudget, including its name
+# Metadata for the PodDisruptionBudget resource
 metadata:
-  # The name of the PodDisruptionBudget, using a Helm template function to include the fullname
-  name: {{ include "k8-day-5.fullname" . }}
+  # Name of the PodDisruptionBudget, using Helm template for fullname
+  name: {{ template "k8-day-5.fullname" . }}-pdb
+  # Namespace where the PodDisruptionBudget is created
+  namespace: {{ .Release.Namespace }}
+  # Labels for the PodDisruptionBudget
+  labels:
 
-# Specifies the specifications for the PodDisruptionBudget
+# Specifications for the PodDisruptionBudget
 spec:
-  # Specifies the minimum number of available replicas during disruptions
-  minAvailable: {{ .Values.pdb.minAvailable }}
+  # Conditionally include minAvailable field if defined in values.yaml
+  {{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- end }}
 
-  # Specifies the selector used to match labels of the pods to which this PDB applies
+  # Conditionally include maxUnavailable field if defined in values.yaml
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+
+  # Selector to match labels of the pods to which this PDB applies
   selector:
-    # Specifies the labels that must be matched by the pods
     matchLabels:
-      # Matches the label "app" with the value retrieved from the Helm template for the application name
-      app: {{ include "k8-day-5.name" . }}
+      # Match label "app.kubernetes.io/name" with the Helm fullname
+      app.kubernetes.io/name: {{ include "k8-day-5.fullname" . }}
