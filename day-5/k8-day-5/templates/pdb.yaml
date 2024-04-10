@@ -1,0 +1,22 @@
+# Specifies the API version for the PodDisruptionBudget resource
+apiVersion: policy/v1
+
+# Specifies the kind of Kubernetes resource, which is a PodDisruptionBudget in this case
+kind: PodDisruptionBudget
+
+# Specifies metadata for the PodDisruptionBudget, including its name
+metadata:
+  # The name of the PodDisruptionBudget, using a Helm template function to include the fullname
+  name: {{ include "k8-day-5.fullname" . }}
+
+# Specifies the specifications for the PodDisruptionBudget
+spec:
+  # Specifies the minimum number of available replicas during disruptions
+  minAvailable: {{ .Values.pdb.minAvailable }}
+
+  # Specifies the selector used to match labels of the pods to which this PDB applies
+  selector:
+    # Specifies the labels that must be matched by the pods
+    matchLabels:
+      # Matches the label "app" with the value retrieved from the Helm template for the application name
+      app: {{ include "k8-day-5.name" . }}
