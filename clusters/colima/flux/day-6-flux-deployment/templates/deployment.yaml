@@ -48,11 +48,15 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
+            - name: my-sealed-secret
+              mountPath: /etc/myapp/config
+              readOnly: true
           {{- end }}
       {{- with .Values.volumes }}
       volumes:
-        {{- toYaml . | nindent 8 }}
+        - name: my-sealed-secret
+          secret:
+            secretName: my-sealed-secret
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
